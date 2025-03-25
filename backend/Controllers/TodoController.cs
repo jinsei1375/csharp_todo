@@ -8,9 +8,9 @@ namespace backend.Controllers
     [Route("api/todo")]
     public class TodoController : ControllerBase
     {
-      private readonly ApplicationDbContext _context;
+      private readonly IApplicationDbContext _context;
 
-      public TodoController(ApplicationDbContext context)
+      public TodoController(IApplicationDbContext context)
       {
         _context = context;
       }

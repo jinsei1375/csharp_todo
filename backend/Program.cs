@@ -17,6 +17,7 @@ builder.Services.AddCors(options =>
 // ★ ApplicationDbContext を DI に登録
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
 var app = builder.Build();
 

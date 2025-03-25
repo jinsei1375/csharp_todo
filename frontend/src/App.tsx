@@ -29,6 +29,14 @@ const App: React.FC = () => {
     setTitle('');
   };
 
+  const toggleCompletion = (id: number) => {
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
+    const updatedTodo = { ...todo, isCompleted: !todo.isCompleted };
+
+    setTodos(todos.map((t) => (t.id === id ? updatedTodo : t)));
+  };
+
   return (
     <div>
       <h1>Todo App</h1>
@@ -36,7 +44,14 @@ const App: React.FC = () => {
       <button onClick={addTodo}>Add</button>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.title}</li>
+          <li key={todo.id}>
+            <input
+              type="checkbox"
+              checked={todo.isCompleted}
+              onChange={() => toggleCompletion(todo.id)}
+            />
+            {todo.title}
+          </li>
         ))}
       </ul>
     </div>
