@@ -29,5 +29,19 @@ namespace backend.Controllers
         return Ok(todo);
       }
 
+      [HttpPut("{id}")]
+      public IActionResult UpdateTodo(int id, [FromBody] Todo todo)
+      {
+        var existingTodo = _context.Todos.Find(id);
+        if (existingTodo == null)
+        {
+          return NotFound();
+        }
+        existingTodo.Title = todo.Title;
+        existingTodo.IsCompleted = todo.IsCompleted;
+        _context.SaveChanges();
+        return Ok(existingTodo);
+      }
+
     }
 }

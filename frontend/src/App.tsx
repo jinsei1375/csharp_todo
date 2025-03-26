@@ -29,12 +29,19 @@ const App: React.FC = () => {
     setTitle('');
   };
 
-  const toggleCompletion = (id: number) => {
+  const toggleCompletion = async (id: number) => {
     const todo = todos.find((t) => t.id === id);
     if (!todo) return;
     const updatedTodo = { ...todo, isCompleted: !todo.isCompleted };
 
-    setTodos(todos.map((t) => (t.id === id ? updatedTodo : t)));
+    const res = await fetch(`http://localhost:5017/api/todo/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedTodo),
+    });
+    if (res.ok) {
+      setTodos(todos.map((t) => (t.id === id ? updatedTodo : t)));
+    }
   };
 
   return (
