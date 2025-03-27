@@ -9,6 +9,8 @@ type Todo = {
 const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editMode, setEditMode] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('http://localhost:5017/api/todo')
@@ -44,20 +46,65 @@ const App: React.FC = () => {
     }
   };
 
+  const editTodo = async (id: number) => {
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
+    if (editMode === id) {
+      const updatedTodo = { ...todo, title: editTitle };
+      const res = await fetch(`http://localhost:5017/api/todo/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedTodo),
+      });
+      if (res.ok) {
+        setTodos(todos.map((t) => (t.id === id ? updatedTodo : t)));
+        setEditMode(null);
+      }
+    } else {
+      setEditTitle(todo.title);
+      setEditMode(id);
+    }
+  };
+
+  const showDeleteAlert = (id: number) => {
+    if (window.confirm('Are you sure?')) {
+      deleteTodo(id);
+    }
+  };
+
+  const deleteTodo = async (id: number) => {
+    const res = await fetch(`http://localhost:5017/api/todo/${id}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      setTodos(todos.filter((t) => t.id !== id));
+    }
+  };
+
   return (
     <div>
       <h1>Todo App</h1>
       <input value={title} onChange={(e) => setTitle(e.target.value)} />
       <button onClick={addTodo}>Add</button>
-      <ul>
+      <ul style={{ padding: '16px' }}>
         {todos.map((todo) => (
-          <li key={todo.id}>
+          <li key={todo.id} style={{ listStyleType: 'none', marginBottom: '8px' }}>
             <input
               type="checkbox"
               checked={todo.isCompleted}
               onChange={() => toggleCompletion(todo.id)}
             />
-            {todo.title}
+            {editMode === todo.id ? (
+              <input type="text" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+            ) : (
+              todo.title
+            )}
+            <div>
+              <button onClick={() => editTodo(todo.id)}>
+                {todo.id === editMode ? 'Update' : 'Edit'}
+              </button>
+              <button onClick={() => showDeleteAlert(todo.id)}>Delete</button>
+            </div>
           </li>
         ))}
       </ul>

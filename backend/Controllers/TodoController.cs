@@ -43,5 +43,19 @@ namespace backend.Controllers
         return Ok(existingTodo);
       }
 
+      // 削除処理
+      [HttpDelete("{id}")]
+      public IActionResult DeleteTodoById(int id)
+      {
+        var existingTodo = _context.Todos.Find(id);
+        if (existingTodo == null)
+        {
+          return NotFound();
+        }
+        _context.Todos.Remove(existingTodo);
+        _context.SaveChanges();
+        return Ok(existingTodo);
+      }
+
     }
 }
