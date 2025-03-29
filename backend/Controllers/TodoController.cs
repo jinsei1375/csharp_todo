@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using backend.Data;
-using backend.Models;
+using backend.Repositories;
+using backend.Models.DTOs;
+using backend.Models.Entities;
+using backend.Mappers;
 
 namespace backend.Controllers
 {
@@ -8,54 +10,80 @@ namespace backend.Controllers
     [Route("api/todo")]
     public class TodoController : ControllerBase
     {
-      private readonly IApplicationDbContext _context;
+        private readonly ITodoRepository _todoRepository;
 
-      public TodoController(IApplicationDbContext context)
-      {
-        _context = context;
-      }
-
-      [HttpGet]
-      public IActionResult GetTodos()
-      {
-        return Ok(_context.Todos.ToList());
-      }
-
-      [HttpPost]
-      public IActionResult AddTodo([FromBody] Todo todo)
-      {
-        _context.Todos.Add(todo);
-        _context.SaveChanges();
-        return Ok(todo);
-      }
-
-      [HttpPut("{id}")]
-      public IActionResult UpdateTodo(int id, [FromBody] Todo todo)
-      {
-        var existingTodo = _context.Todos.Find(id);
-        if (existingTodo == null)
+        // コンストラクタでリポジトリを注入
+        public TodoController(ITodoRepository todoRepository)
         {
-          return NotFound();
+            _todoRepository = todoRepository;
         }
-        existingTodo.Title = todo.Title;
-        existingTodo.IsCompleted = todo.IsCompleted;
-        _context.SaveChanges();
-        return Ok(existingTodo);
-      }
 
-      // 削除処理
-      [HttpDelete("{id}")]
-      public IActionResult DeleteTodoById(int id)
-      {
-        var existingTodo = _context.Todos.Find(id);
-        if (existingTodo == null)
+        // 全てのTodoを取得
+        [HttpGet]
+        public async Task<IActionResult> GetTodos()
         {
-          return NotFound();
+            var todos = await _todoRepository.GetAllAsync();
+            return Ok(TodoMapper.ToDTOList(todos));
         }
-        _context.Todos.Remove(existingTodo);
-        _context.SaveChanges();
-        return Ok(existingTodo);
-      }
 
+        // Todoを追加
+        [HttpPost]
+        public async Task<IActionResult> AddTodo([FromBody] TodoDTO todoDto)
+        {
+            var todo = new TodoEntity
+            {
+                Title = todoDto.Title,
+                IsCompleted = todoDto.IsCompleted,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            var addedTodo = await _todoRepository.AddAsync(todo);
+            return CreatedAtAction(nameof(GetTodoById), new { id = addedTodo.Id }, addedTodo); // 新規追加したTodoを返す
+        }
+
+        // Todoを更新
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTodo(int id, [FromBody] TodoDTO todoDto)
+        {
+            var existingTodo = await _todoRepository.GetByIdAsync(id);
+            if (existingTodo == null)
+            {
+                return NotFound();
+            }
+
+            existingTodo.Title = todoDto.Title;
+            existingTodo.IsCompleted = todoDto.IsCompleted;
+            existingTodo.UpdatedAt = DateTime.UtcNow;
+
+            var updatedTodo = await _todoRepository.UpdateAsync(existingTodo);
+            return Ok(updatedTodo);
+        }
+
+        // Todoを削除
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTodoById(int id)
+        {
+            var existingTodo = await _todoRepository.GetByIdAsync(id);
+            if (existingTodo == null)
+            {
+                return NotFound();
+            }
+
+            await _todoRepository.DeleteAsync(id);
+            return NoContent();  // 削除した場合は 204 NoContent を返す
+        }
+
+        // 個別のTodoを取得（詳細表示）
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTodoById(int id)
+        {
+            var todo = await _todoRepository.GetByIdAsync(id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+            return Ok(todo);
+        }
     }
 }

@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using backend.Models;
+using backend.Models.Entities;
 
 namespace backend.Data 
 {
 
   public interface IApplicationDbContext
     {
-        DbSet<Todo> Todos { get; set; }
+        DbSet<TodoEntity> Todos { get; set; }
         int SaveChanges();
     }
   public class ApplicationDbContext : DbContext, IApplicationDbContext
@@ -17,6 +18,6 @@ namespace backend.Data
 
     public ApplicationDbContext(){}
 
-    public DbSet<Todo> Todos { get; set; }
+    public DbSet<TodoEntity> Todos { get; set; }
   }
 }
