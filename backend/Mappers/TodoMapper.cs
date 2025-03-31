@@ -11,7 +11,8 @@ namespace backend.Mappers
             {
                 Id = entity.Id,
                 Title = entity.Title,
-                IsCompleted = entity.IsCompleted
+                IsCompleted = entity.IsCompleted,
+                CreatedAt = entity.CreatedAt,
             };
         }
 

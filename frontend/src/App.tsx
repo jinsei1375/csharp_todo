@@ -4,6 +4,7 @@ type Todo = {
   id: number;
   title: string;
   isCompleted: boolean;
+  createdAt: string;
 };
 
 const App: React.FC = () => {
@@ -99,6 +100,7 @@ const App: React.FC = () => {
             ) : (
               todo.title
             )}
+            <div>作成日時： {new Date(todo.createdAt).toLocaleString()}</div>
             <div>
               <button onClick={() => editTodo(todo.id)}>
                 {todo.id === editMode ? 'Update' : 'Edit'}
