@@ -16,7 +16,7 @@ const App: React.FC = () => {
   useEffect(() => {
     fetch('http://localhost:5017/api/todo')
       .then((res) => res.json())
-      .then((data) => setTodos(data));
+      .then((data) => setTodos(sortTodos(data)));
   }, []);
 
   const addTodo = async () => {
@@ -43,7 +43,8 @@ const App: React.FC = () => {
       body: JSON.stringify(updatedTodo),
     });
     if (res.ok) {
-      setTodos(todos.map((t) => (t.id === id ? updatedTodo : t)));
+      const updatedTodos = todos.map((t) => (t.id === id ? updatedTodo : t));
+      setTodos(sortTodos(updatedTodos));
     }
   };
 
@@ -80,6 +81,11 @@ const App: React.FC = () => {
     if (res.ok) {
       setTodos(todos.filter((t) => t.id !== id));
     }
+  };
+
+  // ソート関数
+  const sortTodos = (todos: Todo[]) => {
+    return [...todos].sort((a, b) => Number(a.isCompleted) - Number(b.isCompleted));
   };
 
   return (
