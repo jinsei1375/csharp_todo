@@ -18,7 +18,10 @@ namespace backend.Repositories
 
         public async Task<List<TodoEntity>> GetAllAsync()
         {
-            return await _context.Todos.ToListAsync();
+            return await _context.Todos
+            .OrderByDescending(todo => !todo.IsCompleted)
+            .ThenByDescending(todo => todo.CreatedAt)
+            .ToListAsync();
         }
 
         public async Task<TodoEntity?> GetByIdAsync(int id)

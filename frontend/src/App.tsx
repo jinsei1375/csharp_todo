@@ -16,7 +16,7 @@ const App: React.FC = () => {
   useEffect(() => {
     fetch('http://localhost:5017/api/todo')
       .then((res) => res.json())
-      .then((data) => setTodos(sortTodos(data)));
+      .then((data) => setTodos(data));
   }, []);
 
   const addTodo = async () => {
@@ -28,7 +28,7 @@ const App: React.FC = () => {
     });
 
     const data = await res.json();
-    setTodos([...todos, data]);
+    setTodos([data, ...todos]);
     setTitle('');
   };
 
