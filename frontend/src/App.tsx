@@ -72,8 +72,30 @@ const App: React.FC = () => {
     }
   };
 
+  // ドラッグ終了時にTodoの順番を更新
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    // activeとoverはidだけではなくtodo自体が渡ってくることを想定
+    const activeTodo = todos.find((todo) => todo.id === active.id);
+    const overTodo = todos.find((todo) => todo.id === over.id);
+
+    if (!activeTodo || !overTodo) return;
+
+    const reorderedTodos = [...todos];
+    const activeIndex = todos.indexOf(activeTodo);
+    const overIndex = todos.indexOf(overTodo);
+
+    // 並べ替え処理
+    const [movedTodo] = reorderedTodos.splice(activeIndex, 1);
+    reorderedTodos.splice(overIndex, 0, movedTodo);
+
+    setTodos(reorderedTodos);
+  };
+
   return (
-    <div>
+    <div style={{ padding: '8px' }}>
       <h1>Todo App</h1>
       <input value={title} onChange={(e) => setTitle(e.target.value)} />
       <button onClick={addTodo}>Add</button>
@@ -82,6 +104,7 @@ const App: React.FC = () => {
         toggleCompletion={toggleCompletion}
         editTodo={editTodo}
         deleteTodo={deleteTodo}
+        onDragEnd={handleDragEnd}
       />
     </div>
   );

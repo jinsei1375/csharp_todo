@@ -26,7 +26,7 @@ const TodoItem: React.FC<Props> = ({ todo, toggleCompletion, editTodo, deleteTod
   };
 
   return (
-    <li style={{ listStyleType: 'none', marginBottom: '8px' }}>
+    <div style={{ listStyleType: 'none', marginBottom: '8px' }}>
       <input
         type="checkbox"
         checked={todo.isCompleted}
@@ -40,7 +40,7 @@ const TodoItem: React.FC<Props> = ({ todo, toggleCompletion, editTodo, deleteTod
       <div>作成日時: {new Date(todo.createdAt).toLocaleString()}</div>
       <button onClick={handleEdit}>{editMode ? 'Update' : 'Edit'}</button>
       <button onClick={() => deleteTodo(todo.id)}>Delete</button>
-    </li>
+    </div>
   );
 };
 
