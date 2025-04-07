@@ -12,6 +12,7 @@ namespace backend.Mappers
                 Id = entity.Id,
                 Title = entity.Title,
                 IsCompleted = entity.IsCompleted,
+                Order = entity.Order,
                 CreatedAt = entity.CreatedAt,
             };
         }
