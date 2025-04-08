@@ -11,5 +11,6 @@ namespace backend.Repositories
     Task<TodoEntity> AddAsync(TodoEntity todo);
     Task<TodoEntity?> UpdateAsync(TodoEntity todo);
     Task<bool> DeleteAsync(int id);
+    Task<List<TodoEntity>> UpdateOrderAsync(List<TodoEntity> todos);
   }
 }

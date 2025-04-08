@@ -66,5 +66,14 @@ namespace backend.Controllers
             }
             return Ok(todo);
         }
+
+        // Todoの順序を更新
+        [HttpPut("reorder")]
+        public async Task<IActionResult> UpdateTodoOrder([FromBody] List<TodoDTO> todos)
+        {
+            var updatedTodos = await _todoService.UpdateTodoOrderAsync(todos);
+            return Ok(updatedTodos);
+        }
+        
     }
 }

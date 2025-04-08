@@ -19,8 +19,7 @@ namespace backend.Repositories
         public async Task<List<TodoEntity>> GetAllAsync()
         {
             return await _context.Todos
-            .OrderByDescending(todo => !todo.IsCompleted)
-            .ThenByDescending(todo => todo.CreatedAt)
+            .OrderBy(todo => todo.Order)
             .ToListAsync();
         }
 
@@ -56,6 +55,24 @@ namespace backend.Repositories
             _context.Todos.Remove(todo);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<List<TodoEntity>> UpdateOrderAsync(List<TodoEntity> todos)
+        {
+            var todoIds = todos.Select(todo => todo.Id).ToList();
+            var existingTodos = await _context.Todos.Where(todo => todoIds.Contains(todo.Id)).ToListAsync();
+
+            foreach (var todo in existingTodos)
+            {
+                var updatedTodo = todos.FirstOrDefault(t => t.Id == todo.Id);
+                if (updatedTodo != null)
+                {
+                    todo.Order = updatedTodo.Order;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return existingTodos;
         }
     }
 }

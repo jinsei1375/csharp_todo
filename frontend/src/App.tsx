@@ -73,7 +73,7 @@ const App: React.FC = () => {
   };
 
   // ドラッグ終了時にTodoの順番を更新
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = async (event: any) => {
     const { active, over } = event;
     if (!over) return;
 
@@ -92,6 +92,17 @@ const App: React.FC = () => {
     reorderedTodos.splice(overIndex, 0, movedTodo);
 
     setTodos(reorderedTodos);
+
+    await fetch('http://localhost:5017/api/todo/reorder', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(
+        reorderedTodos.map((todo, index) => ({
+          id: todo.id,
+          order: index,
+        }))
+      ),
+    });
   };
 
   return (

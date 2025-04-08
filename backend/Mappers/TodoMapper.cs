@@ -21,5 +21,17 @@ namespace backend.Mappers
         {
             return entities.Select(e => e.ToDTO()).ToList();
         }
+
+        public static List<TodoEntity> ToEntityList(this List<TodoDTO> dtos)
+        {
+            return dtos.Select(d => new TodoEntity
+            {
+                Id = d.Id,
+                Title = d.Title,
+                IsCompleted = d.IsCompleted,
+                Order = d.Order,
+                CreatedAt = d.CreatedAt,
+            }).ToList();
+        }
     }
 }
