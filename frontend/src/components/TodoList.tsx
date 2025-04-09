@@ -3,6 +3,7 @@ import TodoItem from './TodoItem';
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { FaGripVertical } from 'react-icons/fa'; // ドラッグ用のアイコンをインポート
 
 type Todo = {
   id: number;
@@ -18,6 +19,7 @@ type TodoListProps = {
   deleteTodo: (id: number) => void;
   onDragEnd: (event: any) => void;
 };
+const GripIcon = FaGripVertical as React.FC<React.SVGProps<SVGSVGElement>>;
 
 const TodoList: React.FC<TodoListProps> = ({
   todos,
@@ -66,12 +68,10 @@ const SortableTodoItem: React.FC<SortableTodoItemProps> = ({
   return (
     <li
       ref={setNodeRef}
-      {...attributes}
-      {...listeners}
       style={{
+        display: 'flex',
         listStyleType: 'none',
         marginBottom: '8px',
-        cursor: 'move',
         border: '1px solid #ccc',
         padding: '8px',
         borderRadius: '4px',
@@ -82,6 +82,21 @@ const SortableTodoItem: React.FC<SortableTodoItemProps> = ({
         transition,
       }}
     >
+      <div>
+        <span
+          {...attributes}
+          {...listeners}
+          style={{
+            cursor: 'grab',
+            display: 'flex',
+            alignItems: 'center',
+            width: '16px',
+            height: '16px',
+          }}
+        >
+          <GripIcon style={{ marginRight: '8px' }} />
+        </span>
+      </div>
       <TodoItem
         todo={todo}
         toggleCompletion={toggleCompletion}
