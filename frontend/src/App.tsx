@@ -11,11 +11,15 @@ type Todo = {
 const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState('');
+  const [hideCompleted, setHideCompleted] = useState<boolean>(() => {
+    const stored = localStorage.getItem('hideCompleted');
+    return stored ? JSON.parse(stored) : true; // 初期値は true（非表示）
+  });
 
   useEffect(() => {
     fetch('http://localhost:5017/api/todo')
       .then((res) => res.json())
-      .then((data) => setTodos(data));
+      .then((data) => setTodos(getVisibleTodos(data, hideCompleted)));
   }, []);
 
   const addTodo = async () => {
@@ -105,9 +109,25 @@ const App: React.FC = () => {
     });
   };
 
+  const toggleHideCompleted = () => {
+    const newValue = !hideCompleted;
+    setHideCompleted(newValue);
+    localStorage.setItem('hideCompleted', JSON.stringify(newValue));
+    const newTodos = getVisibleTodos(todos, newValue);
+    setTodos(newTodos);
+  };
+
+  const getVisibleTodos = (todos: Todo[], hideCompleted: boolean) => {
+    return hideCompleted ? todos.filter((todo) => !todo.isCompleted) : todos;
+  };
+
   return (
     <div style={{ padding: '8px' }}>
       <h1>Todo App</h1>
+      <label>
+        <input type="checkbox" checked={hideCompleted} onChange={toggleHideCompleted} />
+        完了したTodoを非表示にする
+      </label>
       <input value={title} onChange={(e) => setTitle(e.target.value)} />
       <button onClick={addTodo}>Add</button>
       <TodoList

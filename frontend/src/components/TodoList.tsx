@@ -5,6 +5,7 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { FaGripVertical } from 'react-icons/fa'; // ドラッグ用のアイコンをインポート
 
+// 要素全体でドラッグ&ドロップした際に子要素のクリックイベント発生させる方法あるか確認
 type Todo = {
   id: number;
   title: string;
