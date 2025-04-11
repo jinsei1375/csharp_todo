@@ -7,7 +7,7 @@ type Todo = {
   isCompleted: boolean;
   createdAt: string;
 };
-
+// 完了マークつけた際にも非表示になるように
 const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState('');
@@ -47,7 +47,10 @@ const App: React.FC = () => {
     });
 
     if (res.ok) {
-      setTodos(todos.map((t) => (t.id === id ? updatedTodo : t)));
+      const updatedTodos = todos.map((t) => (t.id === id ? updatedTodo : t));
+      // 完了マークつけた際にも非表示になるように
+      const newTodos = getVisibleTodos(updatedTodos, hideCompleted);
+      setTodos(newTodos);
     }
   };
 
