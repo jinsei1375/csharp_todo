@@ -13,6 +13,7 @@ namespace backend.Mappers
                 Title = entity.Title,
                 IsCompleted = entity.IsCompleted,
                 Order = entity.Order,
+                IsDeleted = entity.IsDeleted,
                 CreatedAt = entity.CreatedAt,
             };
         }
@@ -30,6 +31,7 @@ namespace backend.Mappers
                 Title = d.Title,
                 IsCompleted = d.IsCompleted,
                 Order = d.Order,
+                IsDeleted = d.IsDeleted,
                 CreatedAt = d.CreatedAt,
             }).ToList();
         }

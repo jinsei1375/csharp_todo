@@ -5,6 +5,7 @@ type Todo = {
   id: number;
   title: string;
   isCompleted: boolean;
+  isDeleted: boolean;
   createdAt: string;
 };
 // 完了マークつけた際にも非表示になるように

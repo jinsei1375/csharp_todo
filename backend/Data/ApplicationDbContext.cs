@@ -19,5 +19,12 @@ namespace backend.Data
     public ApplicationDbContext(){}
 
     public DbSet<TodoEntity> Todos { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        // グローバルクエリフィルター追加：論理削除されていないものだけ取得
+        modelBuilder.Entity<TodoEntity>().HasQueryFilter(t => !t.IsDeleted);
+    }
   }
 }
