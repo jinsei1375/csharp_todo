@@ -40,8 +40,10 @@ const App: React.FC = () => {
   const toggleCompletion = async (id: number) => {
     const todo = todos.find((t) => t.id === id);
     if (!todo) return;
-    const updatedTodo = { ...todo, isCompleted: !todo.isCompleted };
+    const isCompleted = !todo.isCompleted;
+    const isDeleted = isCompleted && hideCompleted; // 完了した + 非表示設定ON なら削除扱い
 
+    const updatedTodo = { ...todo, isCompleted, isDeleted };
     const res = await fetch(`http://localhost:5017/api/todo/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -123,9 +125,8 @@ const App: React.FC = () => {
 
   const getVisibleTodos = (todos: Todo[], hideCompleted: boolean, showDeletedTodos: boolean) => {
     if (showDeletedTodos) return todos.filter((todo) => todo.isDeleted); // 論理削除されたもの以外を全部表示
-    return hideCompleted
-      ? todos.filter((todo) => !todo.isCompleted && !todo.isDeleted)
-      : todos.filter((todo) => !todo.isDeleted);
+    console.log(todos);
+    return hideCompleted ? todos.filter((todo) => !todo.isCompleted && !todo.isDeleted) : todos;
   };
 
   return (
@@ -135,9 +136,11 @@ const App: React.FC = () => {
         <input type="checkbox" checked={hideCompleted} onChange={toggleHideCompleted} />
         完了したTodoを非表示にする
       </label>
-      <button onClick={() => setShowDeletedTodos(!showDeletedTodos)}>
-        {showDeletedTodos ? '非表示に戻す' : '完了済みのTodoを見る'}
-      </button>
+      {hideCompleted && (
+        <button onClick={() => setShowDeletedTodos(!showDeletedTodos)}>
+          {showDeletedTodos ? '非表示に戻す' : '完了済みのTodoを見る'}
+        </button>
+      )}
       <input value={title} onChange={(e) => setTitle(e.target.value)} />
       <button onClick={addTodo}>Add</button>
       <TodoList

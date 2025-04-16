@@ -48,6 +48,7 @@ namespace backend.Services
 
             existingTodo.Title = todoDto.Title;
             existingTodo.IsCompleted = todoDto.IsCompleted;
+            existingTodo.IsDeleted = todoDto.IsDeleted;
             existingTodo.UpdatedAt = DateTime.UtcNow;
 
             var updatedTodo = await _todoRepository.UpdateAsync(existingTodo);
