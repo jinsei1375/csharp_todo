@@ -24,6 +24,17 @@ const App: React.FC = () => {
       .then((data) => setTodos(getVisibleTodos(data, hideCompleted, showDeletedTodos)));
   }, []);
 
+  const getVisibleTodos = (todos: Todo[], hideCompleted: boolean, showDeletedTodos: boolean) => {
+    if (showDeletedTodos) return todos.filter((todo) => todo.isDeleted);
+    console.log(todos);
+    if (hideCompleted) {
+      return todos.filter((todo) => !todo.isCompleted);
+    }
+    return todos;
+  };
+
+  const visibleTodos = getVisibleTodos(todos, hideCompleted, showDeletedTodos);
+
   const addTodo = async () => {
     const newTodo = { title, isCompleted: false };
     const res = await fetch('http://localhost:5017/api/todo', {
@@ -123,12 +134,6 @@ const App: React.FC = () => {
     setTodos(newTodos);
   };
 
-  const getVisibleTodos = (todos: Todo[], hideCompleted: boolean, showDeletedTodos: boolean) => {
-    if (showDeletedTodos) return todos.filter((todo) => todo.isDeleted); // 論理削除されたもの以外を全部表示
-    console.log(todos);
-    return hideCompleted ? todos.filter((todo) => !todo.isCompleted && !todo.isDeleted) : todos;
-  };
-
   return (
     <div style={{ padding: '8px' }}>
       <h1>Todo App</h1>
@@ -144,7 +149,7 @@ const App: React.FC = () => {
       <input value={title} onChange={(e) => setTitle(e.target.value)} />
       <button onClick={addTodo}>Add</button>
       <TodoList
-        todos={getVisibleTodos(todos, hideCompleted, showDeletedTodos)}
+        todos={visibleTodos}
         toggleCompletion={toggleCompletion}
         editTodo={editTodo}
         deleteTodo={deleteTodo}
