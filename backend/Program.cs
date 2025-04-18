@@ -25,8 +25,8 @@ builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 builder.Services.AddScoped<TodoService>();
 
 // builder.Services.AddTransient<IGuidService, GuidService>();
-builder.Services.AddScoped<IGuidService, GuidService>();
-// builder.Services.AddSingleton<IGuidService, GuidService>();
+// builder.Services.AddScoped<IGuidService, GuidService>();
+builder.Services.AddSingleton<IGuidService, GuidService>();
 
 
 var app = builder.Build();
