@@ -16,24 +16,21 @@ const App: React.FC = () => {
     const stored = localStorage.getItem('hideCompleted');
     return stored ? JSON.parse(stored) : true; // 初期値は true（非表示）
   });
-  const [showDeletedTodos, setShowDeletedTodos] = useState<boolean>(false);
+  const [showCompletedTodos, setShowCompletedTodos] = useState<boolean>(false);
 
   useEffect(() => {
     fetch('http://localhost:5017/api/todo')
       .then((res) => res.json())
-      .then((data) => setTodos(getVisibleTodos(data, hideCompleted, showDeletedTodos)));
-  }, []);
+      .then((data) => setTodos(getVisibleTodos(data, hideCompleted, showCompletedTodos)));
+  }, [hideCompleted, showCompletedTodos]);
 
-  const getVisibleTodos = (todos: Todo[], hideCompleted: boolean, showDeletedTodos: boolean) => {
-    if (showDeletedTodos) return todos.filter((todo) => todo.isDeleted);
-    console.log(todos);
+  const getVisibleTodos = (todos: Todo[], hideCompleted: boolean, showCompletedTodos: boolean) => {
+    if (showCompletedTodos) return todos.filter((todo) => todo.isCompleted);
     if (hideCompleted) {
       return todos.filter((todo) => !todo.isCompleted);
     }
     return todos;
   };
-
-  const visibleTodos = getVisibleTodos(todos, hideCompleted, showDeletedTodos);
 
   const addTodo = async () => {
     const newTodo = { title, isCompleted: false };
@@ -63,7 +60,7 @@ const App: React.FC = () => {
 
     if (res.ok) {
       const updatedTodos = todos.map((t) => (t.id === id ? updatedTodo : t));
-      const newTodos = getVisibleTodos(updatedTodos, hideCompleted, showDeletedTodos);
+      const newTodos = getVisibleTodos(updatedTodos, hideCompleted, showCompletedTodos);
       setTodos(newTodos);
     }
   };
@@ -126,11 +123,12 @@ const App: React.FC = () => {
     });
   };
 
+  // 完了したTodoを非表示にするチェックボックスのトグル
   const toggleHideCompleted = () => {
     const newValue = !hideCompleted;
     setHideCompleted(newValue);
     localStorage.setItem('hideCompleted', JSON.stringify(newValue));
-    const newTodos = getVisibleTodos(todos, newValue, showDeletedTodos);
+    const newTodos = getVisibleTodos(todos, newValue, showCompletedTodos);
     setTodos(newTodos);
   };
 
@@ -142,14 +140,14 @@ const App: React.FC = () => {
         完了したTodoを非表示にする
       </label>
       {hideCompleted && (
-        <button onClick={() => setShowDeletedTodos(!showDeletedTodos)}>
-          {showDeletedTodos ? '非表示に戻す' : '完了済みのTodoを見る'}
+        <button onClick={() => setShowCompletedTodos(!showCompletedTodos)}>
+          {showCompletedTodos ? '非表示に戻す' : '完了済みのTodoを見る'}
         </button>
       )}
       <input value={title} onChange={(e) => setTitle(e.target.value)} />
       <button onClick={addTodo}>Add</button>
       <TodoList
-        todos={visibleTodos}
+        todos={todos}
         toggleCompletion={toggleCompletion}
         editTodo={editTodo}
         deleteTodo={deleteTodo}
