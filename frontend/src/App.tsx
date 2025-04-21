@@ -139,11 +139,9 @@ const App: React.FC = () => {
         <input type="checkbox" checked={hideCompleted} onChange={toggleHideCompleted} />
         完了したTodoを非表示にする
       </label>
-      {hideCompleted && (
-        <button onClick={() => setShowCompletedTodos(!showCompletedTodos)}>
-          {showCompletedTodos ? '非表示に戻す' : '完了済みのTodoを見る'}
-        </button>
-      )}
+      <button onClick={() => setShowCompletedTodos(!showCompletedTodos)}>
+        {showCompletedTodos ? '非表示に戻す' : '完了済みのTodoを見る'}
+      </button>
       <input value={title} onChange={(e) => setTitle(e.target.value)} />
       <button onClick={addTodo}>Add</button>
       <TodoList
