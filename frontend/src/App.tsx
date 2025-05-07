@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TodoList from './components/TodoList';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Test from './pages/Test';
 
 type Todo = {
   id: number;
@@ -133,25 +135,32 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '8px' }}>
-      <h1>Todo App</h1>
-      <label>
-        <input type="checkbox" checked={hideCompleted} onChange={toggleHideCompleted} />
-        完了したTodoを非表示にする
-      </label>
-      <button onClick={() => setShowCompletedTodos(!showCompletedTodos)}>
-        {showCompletedTodos ? '非表示に戻す' : '完了済みのTodoを見る'}
-      </button>
-      <input value={title} onChange={(e) => setTitle(e.target.value)} />
-      <button onClick={addTodo}>Add</button>
-      <TodoList
-        todos={todos}
-        toggleCompletion={toggleCompletion}
-        editTodo={editTodo}
-        deleteTodo={deleteTodo}
-        onDragEnd={handleDragEnd}
-      />
-    </div>
+    <>
+      <div style={{ padding: '8px' }}>
+        <h1>Todo App</h1>
+        <label>
+          <input type="checkbox" checked={hideCompleted} onChange={toggleHideCompleted} />
+          完了したTodoを非表示にする
+        </label>
+        <button onClick={() => setShowCompletedTodos(!showCompletedTodos)}>
+          {showCompletedTodos ? '非表示に戻す' : '完了済みのTodoを見る'}
+        </button>
+        <input value={title} onChange={(e) => setTitle(e.target.value)} />
+        <button onClick={addTodo}>Add</button>
+        <TodoList
+          todos={todos}
+          toggleCompletion={toggleCompletion}
+          editTodo={editTodo}
+          deleteTodo={deleteTodo}
+          onDragEnd={handleDragEnd}
+        />
+      </div>
+      <Router>
+        <Routes>
+          <Route path="/test" element={<Test />} /> {/* /test に Test コンポーネントを割り当て */}
+        </Routes>
+      </Router>
+    </>
   );
 };
 
