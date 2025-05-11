@@ -5,6 +5,13 @@ using backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+  options.Limits.MaxConcurrentConnections = 100; // 同時接続数の上限
+  options.Limits.MaxConcurrentUpgradedConnections = 100; // WebSocket等のアップグレード接続も対象
+  options.Limits.MaxRequestBodySize = null; // リクエストボディサイズ制限解除（必要に応じて）
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
