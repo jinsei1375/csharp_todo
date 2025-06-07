@@ -4,6 +4,7 @@ import Test from './pages/Test';
 import Todo from './pages/Todo';
 import TypeTest from './pages/TypeTest';
 import InterfaceTest from './pages/InterfaceTest';
+import HasFlagTest from './pages/HasFlagTest';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
           <Route path="/todo" element={<Todo />} />
           <Route path="/type-test" element={<TypeTest />} />
           <Route path="/interface-test" element={<InterfaceTest />} />
+          <Route path="/has-flag-test" element={<HasFlagTest />} />
         </Routes>
       </Router>
     </>
