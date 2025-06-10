@@ -24,6 +24,30 @@ export default function HasFlagTest() {
     });
   };
 
+  const handleSubmit = async () => {
+    try {
+      console.log('Sending permissions:', selectedFlags);
+      const response = await fetch('http://localhost:5017/api/permissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(selectedFlags), // 直接数値を送信
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Server response:', errorText);
+        throw new Error('Failed to submit permissions');
+      }
+
+      const data = await response.json();
+      console.log('Success:', data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
       <h2 style={{ marginBottom: '20px' }}>権限の設定</h2>
@@ -71,7 +95,7 @@ export default function HasFlagTest() {
           cursor: 'pointer',
           fontSize: '14px',
         }}
-        onClick={() => console.log('Selected permissions:', selectedFlags)}
+        onClick={handleSubmit}
       >
         権限を送信
       </button>
