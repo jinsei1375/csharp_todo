@@ -42,5 +42,14 @@ namespace backend.Controllers
               hasExecute = hasExecute
           });
       }
+
+      [HttpGet]
+      public IActionResult Get()
+      {
+        // ReadとExcuteの権限を返す
+        return Ok(new {
+          permissions = Permission.Read | Permission.Execute
+        });
+      }
   }
 }
